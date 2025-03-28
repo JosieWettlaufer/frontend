@@ -1,4 +1,5 @@
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS for styling
+import "./App.css";
 import {
   BrowserRouter as Router,
   Route,
@@ -14,6 +15,7 @@ import Dashboard from "./components/Dashboard"; // Import Dashboard component
 import ProtectedRoute from "./components/ProtectedRoute"; // Import ProtectedRoute component for routing with authentication
 import Welcome from "./components/Welcome"; // Import Welcome component
 import RecipePage from "./components/RecipePage"; // Import RecipePage component
+import ThemeToggle from "./components/ThemeToggle";
 
 const App = () => {
   const [user, setUser] = useState(null); // State to store the current user
@@ -94,7 +96,8 @@ const App = () => {
 
         {/* Protected routes that require authentication */}
         <Route element={<ProtectedRoute user={user} />}>
-          <Route
+        {/* Route to Dashboard page */}
+          <Route                    
             path="/dashboard"
             element={
               <Dashboard
@@ -103,8 +106,9 @@ const App = () => {
                 refreshPages={fetchUserPages}
               />
             }
-          /> {/* Route to Dashboard page */}
-          
+          /> 
+          {/* Route to Themes page */}
+            <Route path="/Themes" element={<ThemeToggle />} />
           {/* Dynamic route for recipe pages with pageId parameter */}
           <Route path="/recipe/:pageId" element={<RecipePageWrapper />} />
         </Route>
