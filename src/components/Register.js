@@ -1,76 +1,89 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
+/**
+ * Register component handles user registration by capturing the user details,
+ * validating the form, and submitting the data to the backend.
+ * 
+ * @returns {JSX.Element} The rendered Register component
+ */
 const Register = () => {
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: ''
+    username: "",
+    password: "",
   });
-  
-  const [error, setError] = useState('');
+
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-  
+  const [successMessage, setSuccessMessage] = useState("");
+
   const navigate = useNavigate();
 
-  const { username, email, password } = formData;
+  const { username, password } = formData;
 
+  /**
+   * Handles form input changes and updates the state with the input values.
+   * 
+   * @param {React.ChangeEvent<HTMLInputElement>} e - The event object for input changes
+   */
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
+  /**
+   * Handles the form submission, validates inputs, sends a POST request 
+   * to register the user, and handles the response or errors.
+   * 
+   * @param {React.FormEvent<HTMLFormElement>} e - The event object for form submission
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccessMessage('');
-    
+    setError("");
+    setSuccessMessage("");
+
     // Basic validation
-    if (!username || !email || !password) {
-      setError('All fields are required');
+    if (!username || !password) {
+      setError("All fields are required");
       return;
     }
 
     try {
       setIsLoading(true);
-      const response = await fetch('http://localhost:5690/api/users/register', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5690/api/users/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           username,
-          email,
-          password
-        })
+          password,
+        }),
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
+        throw new Error(data.message || "Registration failed");
       }
-      
-      setSuccessMessage('Registration successful! Redirecting to login...');
-      
+
+      setSuccessMessage("Registration successful! Redirecting to login...");
+
       // Clear form
       setFormData({
-        username: '',
-        email: '',
-        password: ''
+        username: "",
+        password: "",
       });
-      
+
       // Redirect to login after a short delay
       setTimeout(() => {
-        navigate('/login');
+        navigate("/login");
       }, 2000);
-      
     } catch (err) {
-      setError(err.message || 'Registration failed. Please try again.');
-      console.error('Registration error:', err);
+      setError(err.message || "Registration failed. Please try again.");
+      console.error("Registration error:", err);
     } finally {
       setIsLoading(false);
     }
@@ -90,16 +103,18 @@ const Register = () => {
                   {error}
                 </div>
               )}
-              
+
               {successMessage && (
                 <div className="alert alert-success" role="alert">
                   {successMessage}
                 </div>
               )}
-              
+
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <label htmlFor="username" className="form-label">Username</label>
+                  <label htmlFor="username" className="form-label">
+                    Username
+                  </label>
                   <input
                     type="text"
                     className="form-control"
@@ -110,22 +125,11 @@ const Register = () => {
                     required
                   />
                 </div>
-                
+
                 <div className="mb-3">
-                  <label htmlFor="email" className="form-label">Email</label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    id="email"
-                    name="email"
-                    value={email}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                
-                <div className="mb-3">
-                  <label htmlFor="password" className="form-label">Password</label>
+                  <label htmlFor="password" className="form-label">
+                    Password
+                  </label>
                   <input
                     type="password"
                     className="form-control"
@@ -136,16 +140,16 @@ const Register = () => {
                     required
                   />
                 </div>
-                
+
                 <button
                   type="submit"
                   className="btn btn-primary w-100"
                   disabled={isLoading}
                 >
-                  {isLoading ? 'Registering...' : 'Register'}
+                  {isLoading ? "Registering..." : "Register"}
                 </button>
               </form>
-              
+
               <div className="mt-3 text-center">
                 Already have an account? <Link to="/login">Login</Link>
               </div>
